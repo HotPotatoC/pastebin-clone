@@ -28,9 +28,10 @@ func main() {
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 	if os.Getenv("ENVIRONMENT") == "dev" {
 		zerolog.SetGlobalLevel(zerolog.DebugLevel)
+		log.Logger = log.With().Caller().Logger().Output(zerolog.ConsoleWriter{Out: os.Stderr})
+	} else {
+		log.Logger = log.With().Caller().Logger()
 	}
-
-	log.Logger = log.With().Caller().Logger()
 
 	log.Info().Msg("Starting pastebin-clone backend")
 	ctx, cancel := context.WithCancel(context.Background())
