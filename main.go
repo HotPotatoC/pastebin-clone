@@ -30,6 +30,8 @@ func main() {
 		zerolog.SetGlobalLevel(zerolog.DebugLevel)
 	}
 
+	log.Logger = log.With().Caller().Logger()
+
 	log.Info().Msg("Starting pastebin-clone backend")
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
