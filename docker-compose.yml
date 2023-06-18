@@ -1,0 +1,74 @@
+version: '3'
+services:
+  scylla-node1:
+    image: scylladb/scylla:5.1.0
+    container_name: scylla-node1
+    command: --listen-address=172.20.0.10 --smp=1
+    ports:
+      - 9042:9042
+    networks:
+      scylla_cluster:
+        ipv4_address: 172.20.0.10
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 10
+        window: 30s
+      resources:
+        limits:
+          cpus: '4'
+        reservations:
+          cpus: '0.1'
+    healthcheck:
+      test: [ "CMD-SHELL", "[ $$(nodetool statusgossip) = running ]" ]
+      interval: 30s
+      timeout: 20s
+      retries: 10
+      start_period: 120s
+    volumes:
+      - scylla-node1-data:/var/lib/scylla
+
+  scylla-node2:
+    image: scylladb/scylla:5.1.0
+    container_name: scylla-node2
+    command: --seeds=scylla-node1 --listen-address=172.20.0.11 --smp=1
+    ports:
+      - 9043:9042
+    networks:
+      scylla_cluster:
+        ipv4_address: 172.20.0.11
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 10
+        window: 30s
+      resources:
+        limits:
+          cpus: '4'
+        reservations:
+          cpus: '0.1'
+    healthcheck:
+      test: [ "CMD-SHELL", "[ $$(nodetool statusgossip) = running ]" ]
+      interval: 30s
+      timeout: 20s
+      retries: 10
+      start_period: 120s
+    depends_on:
+      scylla-node1:
+        condition: service_healthy
+    volumes:
+      - scylla-node2-data:/var/lib/scylla
+
+volumes:
+  scylla-node1-data:
+  scylla-node2-data:
+
+
+networks:
+  scylla_cluster:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
