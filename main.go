@@ -115,5 +115,4 @@ func main() {
 	signal := <-exitSignal
 	log.Warn().Any("signal", signal).Msg("received signal, shutting down...")
 	app.Shutdown()
-	cancel()
 }
