@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/signal"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/HotPotatoC/pastebin-clone/api"
@@ -29,6 +30,7 @@ func main() {
 		zerolog.SetGlobalLevel(zerolog.DebugLevel)
 	}
 
+	log.Info().Msg("Starting pastebin-clone backend")
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -55,6 +57,7 @@ func main() {
 
 	scyllaHosts = strings.Split(scyllaHost, ",")
 
+	log.Info().Any("hosts", scyllaHosts).Msgf("Connecting to ScyllaDB")
 	db, err := infrastructure.NewScylla(ctx, scyllaKeyspace, scyllaHosts)
 	if err != nil {
 		log.Fatal().Err(err).Send()
@@ -96,17 +99,18 @@ func main() {
 	identityAPI.Post("/login", api.Login)       // /identity/login
 
 	exitSignal := make(chan os.Signal, 1)
-	signal.Notify(exitSignal, os.Interrupt)
+	signal.Notify(exitSignal, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
 
 	go func() {
+		log.Info().Msgf("Listening on %s", net.JoinHostPort(httpHostname, httpPort))
 		err := app.Listen(net.JoinHostPort(httpHostname, httpPort))
 		if err != nil {
 			log.Fatal().Err(err).Send()
 		}
 	}()
 
-	<-exitSignal
-	if err := app.Shutdown(); err != nil {
-		log.Warn().Msg("Shutting down server")
-	}
+	signal := <-exitSignal
+	log.Warn().Any("signal", signal).Msg("received signal, shutting down...")
+	app.Shutdown()
+	cancel()
 }
