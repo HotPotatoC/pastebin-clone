@@ -61,7 +61,7 @@ func main() {
 	scyllaHosts = strings.Split(scyllaHost, ",")
 
 	log.Info().Any("hosts", scyllaHosts).Msgf("Connecting to ScyllaDB")
-	db, err := infrastructure.NewScylla(ctx, scyllaKeyspace, scyllaHosts)
+	db, err := infrastructure.NewScyllaDB(ctx, scyllaKeyspace, scyllaHosts)
 	if err != nil {
 		log.Fatal().Err(err).Send()
 	}

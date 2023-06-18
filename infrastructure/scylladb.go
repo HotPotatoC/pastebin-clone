@@ -7,7 +7,7 @@ import (
 	"github.com/scylladb/gocqlx/v2"
 )
 
-func NewScylla(ctx context.Context, keyspace string, hosts []string) (gocqlx.Session, error) {
+func NewScyllaDB(ctx context.Context, keyspace string, hosts []string) (gocqlx.Session, error) {
 	cluster := gocql.NewCluster(hosts...)
 	cluster.Keyspace = keyspace
 
