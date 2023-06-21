@@ -97,7 +97,7 @@ func (d Dependency) GetPaste(ctx context.Context, shortLink string) (GetPasteOut
 		Username:  user.Name,
 		Paste:     string(decompressed),
 		ShortLink: paste.ShortLink,
-		CreatedAt: paste.CreatedAt.Format("2006-01-02 15:04:05"),
+		CreatedAt: paste.CreatedAt.Format(time.RFC3339),
 	}
 
 	output.Metadata.Size = len(decompressed)

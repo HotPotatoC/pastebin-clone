@@ -91,7 +91,7 @@ func (d Dependency) Login(ctx context.Context, email, password string) (LoginOut
 	output.User.Id = identity.Id
 	output.User.Name = identity.Name
 	output.User.Email = identity.Email
-	output.User.CreatedAt = identity.CreatedAt.Format("2006-01-02 15:04:05")
+	output.User.CreatedAt = identity.CreatedAt.Format(time.RFC3339)
 
 	return output, nil
 }
