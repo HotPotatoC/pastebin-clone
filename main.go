@@ -11,7 +11,7 @@ import (
 
 	"github.com/HotPotatoC/pastebin-clone/api"
 	"github.com/HotPotatoC/pastebin-clone/backend"
-	"github.com/HotPotatoC/pastebin-clone/infrastructure"
+	"github.com/HotPotatoC/pastebin-clone/clients"
 	"github.com/HotPotatoC/pastebin-clone/repository"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -61,7 +61,7 @@ func main() {
 	scyllaHosts = strings.Split(scyllaHost, ",")
 
 	log.Info().Any("hosts", scyllaHosts).Msgf("Connecting to ScyllaDB")
-	db, err := infrastructure.NewScyllaDB(ctx, scyllaKeyspace, scyllaHosts)
+	db, err := clients.NewScyllaDB(ctx, scyllaKeyspace, scyllaHosts)
 	if err != nil {
 		log.Fatal().Err(err).Send()
 	}
