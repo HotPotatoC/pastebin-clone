@@ -14,7 +14,7 @@ func (d Dependency) SavePaste(c *fiber.Ctx) error {
 	shortLink, err := d.Backend.SavePaste(c.Context(), backend.SavePasteParams{
 		Text:          body,
 		UserID:        c.Locals("userID").(string),
-		UserIPAddress: c.IP(),
+		UserIPAddress: c.IP(), // TODO: Still not sure if this is the correct way to get the user's IP address
 	})
 	if err != nil {
 		return err
