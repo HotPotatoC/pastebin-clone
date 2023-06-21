@@ -70,7 +70,7 @@ type GetPasteOutput struct {
 	Metadata  struct {
 		Size              int    `json:"size"`
 		SizeHumanReadable string `json:"size_human_readable"`
-	}
+	} `json:"metadata"`
 }
 
 func (d Dependency) GetPaste(ctx context.Context, shortLink string) (GetPasteOutput, error) {
