@@ -61,12 +61,23 @@ func main() {
 
 	scyllaHosts = strings.Split(scyllaHost, ",")
 
+	redisAddr, ok := os.LookupEnv("REDIS_ADDR")
+	if !ok {
+		redisAddr = "127.0.0.1:6379"
+	}
+
 	log.Info().Any("hosts", scyllaHosts).Msgf("Connecting to ScyllaDB")
 	db, err := clients.NewScyllaDB(ctx, scyllaKeyspace, scyllaHosts)
 	if err != nil {
 		log.Fatal().Err(err).Send()
 	}
 	defer db.Close()
+
+	log.Info().Str("addr", redisAddr).Msgf("Connecting to Redis")
+	redis, err := clients.NewRedisClient(ctx, redisAddr)
+	if err != nil {
+		log.Fatal().Err(err).Send()
+	}
 
 	app := fiber.New(fiber.Config{
 		AppName:      "github.com/HotPotatoC/pastebin-clone - Backend",
@@ -77,7 +88,8 @@ func main() {
 	})
 
 	repository := repository.Dependency{
-		DB: db,
+		DB:    db,
+		Redis: redis,
 	}
 
 	backend := backend.Dependency{

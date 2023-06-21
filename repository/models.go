@@ -7,12 +7,12 @@ import (
 )
 
 type Paste struct {
-	Id        string
-	UserId    string
-	Paste     []byte
-	ShortLink string
-	Hash      string
-	CreatedAt time.Time
+	Id        string    `redis:"id"`
+	UserId    string    `redis:"user_id"`
+	Paste     []byte    `redis:"paste"`
+	ShortLink string    `redis:"short_link"`
+	Hash      string    `redis:"hash"`
+	CreatedAt time.Time `redis:"created_at"`
 }
 type User struct {
 	Id        string
