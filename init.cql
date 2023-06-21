@@ -6,11 +6,12 @@ WITH replication = {
 
 CREATE TABLE IF NOT EXISTS pastebin.pastes (
   id UUID,
-  user_id TEXT,
-  paste TEXT,
+  user_id UUID,
+  paste BLOB,
+  short_link TEXT,
   hash TEXT,
   created_at TIMESTAMP,
-  PRIMARY KEY (id, hash, created_at)
+  PRIMARY KEY (id, short_link, hash, created_at)
 );
 
 CREATE TABLE IF NOT EXISTS pastebin.users (

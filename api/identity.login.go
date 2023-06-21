@@ -27,7 +27,7 @@ func (d *Dependency) Login(c *fiber.Ctx) error {
 		})
 	}
 
-	accessToken, user, err := d.Backend.Login(c.Context(), input.Email, input.Password)
+	output, err := d.Backend.Login(c.Context(), input.Email, input.Password)
 	switch {
 	case errors.Is(err, gocql.ErrNotFound):
 		fallthrough
@@ -41,12 +41,8 @@ func (d *Dependency) Login(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message":      "User logged in successfully",
-		"access_token": accessToken,
-		"user": fiber.Map{
-			"id":    user.Id,
-			"name":  user.Name,
-			"email": user.Email,
-		},
+		"access_token": output.AccessToken,
+		"user":         output.User,
 	})
 }
 

@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/HotPotatoC/pastebin-clone/api"
+	"github.com/HotPotatoC/pastebin-clone/api/middleware"
 	"github.com/HotPotatoC/pastebin-clone/backend"
 	"github.com/HotPotatoC/pastebin-clone/clients"
 	"github.com/HotPotatoC/pastebin-clone/repository"
@@ -100,6 +101,9 @@ func main() {
 	identityAPI := app.Group("/identity")       // /identity
 	identityAPI.Post("/register", api.Register) // /identity/register
 	identityAPI.Post("/login", api.Login)       // /identity/login
+
+	app.Post("/", middleware.Authenticated, api.SavePaste)
+	app.Get("/:short_link", api.GetPaste)
 
 	exitSignal := make(chan os.Signal, 1)
 	signal.Notify(exitSignal, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)

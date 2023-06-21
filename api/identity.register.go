@@ -3,11 +3,10 @@ package api
 import (
 	"errors"
 	"net/mail"
-	"time"
 
+	"github.com/HotPotatoC/pastebin-clone/backend"
 	"github.com/HotPotatoC/pastebin-clone/repository"
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 )
 
 type RegisterInput struct {
@@ -31,15 +30,11 @@ func (d Dependency) Register(c *fiber.Ctx) error {
 		})
 	}
 
-	identity := repository.UsersStruct{
-		Id:        uuid.New().String(),
-		CreatedAt: time.Now(),
-		Email:     input.Email,
-		Name:      input.Name,
-		Password:  input.Password,
-	}
-
-	accessToken, err := d.Backend.Register(c.Context(), identity)
+	accessToken, err := d.Backend.Register(c.Context(), backend.RegisterParams{
+		Name:     input.Name,
+		Email:    input.Email,
+		Password: input.Password,
+	})
 	if err != nil {
 		if errors.Is(err, repository.ErrEmailAlreadyExists) {
 			return c.Status(fiber.StatusConflict).JSON(fiber.Map{
