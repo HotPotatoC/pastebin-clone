@@ -25,8 +25,8 @@ func (d Dependency) SavePaste(ctx context.Context, params SavePasteParams) (stri
 	}
 
 	b := make([]byte, 0)
-	b = append(b, params.UserID[:]...)
-	b = append(b, []byte(params.UserIPAddress)...)
+	b = append(b, params.UserID...)
+	b = append(b, params.UserIPAddress...)
 	b = append(b, params.Text...)
 
 	hash, err := logic.Hash(b)
