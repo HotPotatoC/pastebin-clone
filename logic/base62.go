@@ -1,15 +1,13 @@
 package logic
 
-import "math/big"
+import (
+	"github.com/jxskiss/base62"
+)
 
 func EncodeBase62(src []byte) string {
-	var i big.Int
-	i.SetBytes(src)
-	return i.Text(62)
+	return base62.EncodeToString(src)
 }
 
-func DecodeBase62(src string) []byte {
-	var i big.Int
-	i.SetString(src, 62)
-	return i.Bytes()
+func DecodeBase62(src string) ([]byte, error) {
+	return base62.DecodeString(src)
 }
